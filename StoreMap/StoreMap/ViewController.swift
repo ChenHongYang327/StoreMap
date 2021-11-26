@@ -72,6 +72,19 @@ class ViewController: UIViewController {
         // 使用present 開啟 ViewControll
         let storeMapToolVC = StoreMapToolViewController()
         storeMapToolVC.delegate = self
+        storeMapToolVC.setButton(config: FamilyMartConfig(
+            cvsname: "www.shinsoft.com.tw",
+            cvsid: UUID().uuidString,
+            cvstemp: "供EC廠商傳遞保留的資訊",
+            exchange: true
+        ))
+        storeMapToolVC.setButton(config: SevenElevenConfig(
+            eshopid: "851",
+            storeid: nil,
+            showtype: 2,
+            tempvar: UUID().uuidString,
+            url: "https://webhook.site/202e305d-f22f-4795-aa21-ca0720a5ab1a"
+        ))
         storeMapToolVC.modalPresentationStyle = .fullScreen
         present(storeMapToolVC, animated: false)
     }

@@ -12,6 +12,7 @@
 		2FBF1D122746312E00C26925 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FBF1D112746312E00C26925 /* Assets.xcassets */; };
 		2FBF1D152746312E00C26925 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2FBF1D132746312E00C26925 /* LaunchScreen.storyboard */; };
 		2FBF1D1D2746346100C26925 /* StoreMapToolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FBF1D1C2746346100C26925 /* StoreMapToolViewController.swift */; };
+		4460ECBD27512FFD0035ACA0 /* StoreMapConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4460ECBC27512FFD0035ACA0 /* StoreMapConfig.swift */; };
 		F697AC7EB3C55E9D0879932B /* Pods_StoreMap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21A010DBA1CFC3528A1DA3EA /* Pods_StoreMap.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		2FBF1D162746312E00C26925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2FBF1D1C2746346100C26925 /* StoreMapToolViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreMapToolViewController.swift; sourceTree = "<group>"; };
 		367105961B17A140A6FBE56F /* Pods-StoreMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreMap.release.xcconfig"; path = "Target Support Files/Pods-StoreMap/Pods-StoreMap.release.xcconfig"; sourceTree = "<group>"; };
+		4460ECBC27512FFD0035ACA0 /* StoreMapConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreMapConfig.swift; sourceTree = "<group>"; };
 		CDFEBA00EC61A37C78AEA941 /* Pods-StoreMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreMap.debug.xcconfig"; path = "Target Support Files/Pods-StoreMap/Pods-StoreMap.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -63,12 +65,21 @@
 			children = (
 				2FBF1D082746312900C26925 /* AppDelegate.swift */,
 				2FBF1D0C2746312900C26925 /* ViewController.swift */,
-				2FBF1D1C2746346100C26925 /* StoreMapToolViewController.swift */,
+				4460ECBB27512FBC0035ACA0 /* Library */,
 				2FBF1D112746312E00C26925 /* Assets.xcassets */,
 				2FBF1D132746312E00C26925 /* LaunchScreen.storyboard */,
 				2FBF1D162746312E00C26925 /* Info.plist */,
 			);
 			path = StoreMap;
+			sourceTree = "<group>";
+		};
+		4460ECBB27512FBC0035ACA0 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				2FBF1D1C2746346100C26925 /* StoreMapToolViewController.swift */,
+				4460ECBC27512FFD0035ACA0 /* StoreMapConfig.swift */,
+			);
+			path = Library;
 			sourceTree = "<group>";
 		};
 		BCA0E97B802B7BAAC91B22B8 /* Frameworks */ = {
@@ -202,6 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4460ECBD27512FFD0035ACA0 /* StoreMapConfig.swift in Sources */,
 				2FBF1D0D2746312900C26925 /* ViewController.swift in Sources */,
 				2FBF1D092746312900C26925 /* AppDelegate.swift in Sources */,
 				2FBF1D1D2746346100C26925 /* StoreMapToolViewController.swift in Sources */,
@@ -346,7 +358,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y87XMH3745;
+				DEVELOPMENT_TEAM = YA9635N498;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StoreMap/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -359,7 +371,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hank.test;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hank.storeMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -375,7 +387,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y87XMH3745;
+				DEVELOPMENT_TEAM = YA9635N498;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StoreMap/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -388,7 +400,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hank.test;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hank.storeMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

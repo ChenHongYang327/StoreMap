@@ -19,9 +19,10 @@ class StoreMapToolViewController: UIViewController {
     
     public weak var delegate: StoreMapToolViewControllerDelegate?
     
+    private var familyConfig: FamilyMartConfig?
+    private var sevenConfig: SevenElevenConfig?
+    private var current: StoreMapConfig?
     private var redirectDownloadUrlStr: String?
-    private var returnURLString: String = "https://webhook.site/3e1ca09d-38d6-4682-a84e-e591652087bb"
-    private var isSevenCanSave = false
 
     private let wKwebView: WKWebView = {
         let wkwebView = WKWebView()
@@ -68,14 +69,6 @@ class StoreMapToolViewController: UIViewController {
 //        vc.present(storeMapToolVC, animated: false)
 //    }
 
-    convenience init(returnURLString: String?){
-        self.init()
-        
-        if returnURLString != nil && returnURLString != "" {
-            self.returnURLString = returnURLString!
-        }
-        
-    }
     
     // MARK: Life cycle
     
@@ -84,7 +77,6 @@ class StoreMapToolViewController: UIViewController {
         
         view.backgroundColor = .systemGray
         
-        isSevenCanSave = false
         wKwebView.navigationDelegate = self
         
         view.addSubview(topView)
@@ -99,6 +91,8 @@ class StoreMapToolViewController: UIViewController {
         
         // 把wkwebView 隱藏，需要時再顯示
         wKwebView.isHidden = true
+        familyStoreButton.isHidden = familyConfig == nil
+        sevenStoreButton.isHidden = sevenConfig == nil
         
     }
     
@@ -144,74 +138,26 @@ class StoreMapToolViewController: UIViewController {
         
     }
     
-    // MARK: Constant
-    
-    enum StoreBaseUrlStr: String {
-        case seven = "https://emap.presco.com.tw/c2cemapm-u.ashx"
-        case family = "https://mfme.map.com.tw/default.aspx?cvsname=www.shi nsoft.com.tw&cvsid=111&cvstemp=%A8%FA%B3f%A9%B 1%ACd%B8%DF%B4%FA%B8%D5&exchange=true"
-        
-//        func getStoreID() -> String {
-//            switch self {
-//            case .seven:
-//                <#code#>
-//            case .family:
-//                <#code#>
-//            case .family2:
-//                <#code#>
-//            }
-//        }
+    // MARK: Button Setter
+    public func setButton(config: FamilyMartConfig) {
+        familyConfig = config
     }
     
-    // userDefault 的 key
-    enum UserDefaultKeyName: String {
-        case storeidSeven
+    public func setButton(config: SevenElevenConfig) {
+        sevenConfig = config
     }
+
     
     // MARK: Button Action
     
     // Seven Button
     @objc private func didTapSevenStoreButton(){
-        
-        // 顯示wKwebview
-        wKwebView.isHidden = false
-        
-        let baseURL = URL(string: StoreBaseUrlStr.seven.rawValue)!
-        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
-        components?.queryItems = [
-            URLQueryItem(name: "eshopid", value: "851"),
-            URLQueryItem(name: "tempvar", value: UUID().uuidString),
-            URLQueryItem(name: "url", value: returnURLString)
-        ]
-        
-        // 判斷是否要預帶資料
-        if let storeid = UserDefaults.standard.object(forKey: UserDefaultKeyName.storeidSeven.rawValue) as? String {
-            // 需帶資料
-            // storeid -> storeid
-            // showtype -> 2
-            components?.queryItems?.append(contentsOf: [
-                URLQueryItem(name: "storeid", value: storeid),
-                URLQueryItem(name: "showtype", value: "2")
-            ])
-        } else {
-            // 重新選擇
-            components?.queryItems?.append(contentsOf: [
-                URLQueryItem(name: "storeid", value: nil),
-                URLQueryItem(name: "showtype", value: "1")
-            ])
-        }
-        let url = components?.url
-        showWkWebView(storeURL: url)
-        
+        showWkWebView(config: sevenConfig)
     }
     
     // Family Button
     @objc private func didTapFamilyStoreButton(){
-        // 顯示wKwebview
-        wKwebView.isHidden = false
-        
-        let url = URL(string: StoreBaseUrlStr.family.rawValue.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
-        showWkWebView(storeURL: url)
-        
+        showWkWebView(config: familyConfig)
     }
     
     // BackButton
@@ -221,11 +167,12 @@ class StoreMapToolViewController: UIViewController {
     }
     
     // 顯示wkwebView畫面
-    private func showWkWebView(storeURL: URL?){
-        if let url = storeURL {
-            let request = URLRequest(url: url)
+    private func showWkWebView(config: StoreMapConfig?){
+        current = config
+        if let request = config?.request {
             wKwebView.load(request)
         }
+        wKwebView.isHidden = false
     }
     
 }
@@ -234,65 +181,45 @@ class StoreMapToolViewController: UIViewController {
 extension StoreMapToolViewController: WKNavigationDelegate, WKUIDelegate {
     
     // finish download url
-//    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-//        if let url = wKwebView.url {
-//            print("finishurl::\(url.absoluteString)")
-//        }
-//    }
-        
-    // start download url
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        
-        var startdownloadWebUrlStr: String?
-        
-        if let url = webView.url {
-            startdownloadWebUrlStr = url.absoluteString
-//            print("starturl::\(startdownloadWebUrlStr!)")
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+       
+        guard let startURL = webView.url?.absoluteString else { return }
+        print("starturl::\(startURL)")
             
-            // For family use
-            if startdownloadWebUrlStr!.contains("retrieve") , startdownloadWebUrlStr!.contains("searchWord=") {
-                
-                sendValueAndDissmiss(urlStr: startdownloadWebUrlStr!, timestamp: Date(), snapshotImage: getScreenShot(uiElement: wKwebView))
-            }
-            
-            // For seven use
-            if isSevenCanSave {
-                if startdownloadWebUrlStr!.contains(returnURLString) {
-                    
-                    sendValueAndDissmiss(urlStr: redirectDownloadUrlStr!, timestamp: Date(), snapshotImage: getScreenShot(uiElement: wKwebView))
-                }
-            }
-            
+        switch current {
+        case is FamilyMartConfig where startURL.contains("retrieve") && startURL.contains("searchWord="):
+            sendValueAndDissmiss(urlStr: startURL)
+        case let config as SevenElevenConfig where startURL.contains(config.replyURL) :
+            sendValueAndDissmiss(urlStr: config.lastRedirectURL)
+        default:
+            break
         }
         
     }
+        
+    // start download url
+//    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+//
+//    }
     
    
     // 抓取轉導 URL
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Swift.Void) {
         
         if navigationAction.navigationType == .other {
-            if let url = navigationAction.request.url {
-                redirectDownloadUrlStr = url.absoluteString
-//                print("Transurl::\(url)")
-                
-                // 判斷是否選擇商店(for seven)
-                if redirectDownloadUrlStr!.contains("emap.pcsc.com.tw/mobilemap/Info/Default.aspx") {
-                    isSevenCanSave = true
-                    
-                    // 存storeID to Userdefault (for seven store)
-                    /// regular expression
-                    let storeId = redirectDownloadUrlStr!.components(separatedBy: "&").first?.components(separatedBy: "=").last
-                    UserDefaults.standard.set(storeId!, forKey: UserDefaultKeyName.storeidSeven.rawValue)
-                }
-                
-            } else {
+            
+            guard let url = navigationAction.request.url else {
                 print("Transform URL Fail")
                 decisionHandler(.cancel)
                 return
             }
+            
+            if let config = current as? SevenElevenConfig {
+                config.saveStoreId(from: url)
+            }
         }
         decisionHandler(.allow)
+        
     }
     
 }
@@ -308,14 +235,14 @@ extension StoreMapToolViewController {
     }
     
     // 把值傳回，並返回
-    private func sendValueAndDissmiss (urlStr: String, timestamp: Date, snapshotImage: UIImage){
+    private func sendValueAndDissmiss (urlStr: String){
         
         let captureTextArray = urlStr.components(separatedBy: "?")
         let queryItem = captureTextArray.last!
         
-        let imageJpegData = snapshotImage.jpegData(compressionQuality: 0.6)!
+        let imageJpegData = getScreenShot(uiElement: wKwebView).jpegData(compressionQuality: 0.6)!
         
-        let infoItem = Info(storeId: queryItem, timestamp: timestamp, snapshot: imageJpegData)
+        let infoItem = Info(storeId: queryItem, timestamp: Date(), snapshot: imageJpegData)
         delegate?.getResultInfo(info: infoItem)
         dismiss(animated: false, completion: nil)
         
